@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Data</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+            padding-top: 210px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding-top: 85px;
+            padding-left: 140px;
+            padding-right: 140px;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Center the content horizontally */
+        }
+
+        .export-section {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .export-container {
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items:normal;
+            font-weight: bold;
+        }
+
+        .export-container a {
+            padding: 10px 20px;
+            background-color: #F5A623;
+            color: #12192C;
+            border-radius: 4px;
+            text-decoration: none;
+            margin: 5px;
+        }
+
+        .export-container a:hover {
+            background-color: #12192C;
+            color: #ddd;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            {% include 'sidebar2.html' %}
+        </div>
+        <div class="main-content">
+            <h1>Export Data to Excel</h1>
+            <div class="export-section">
+                <div class="export-container">
+                    <a href="{% url 'export_clients' %}">Export Clients</a>
+                    <a href="{% url 'export_products' %}">Export Products</a>
+                    <a href="{% url 'export_sales' %}">Export Sales</a>
+                    <a href="{% url 'export_achats' %}">Export Achats</a>
+                </div>
+            </div>
+            <div class="messages">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert {{ message.tags }}">{{ message }}</div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

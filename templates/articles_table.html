@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .main-content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .styled-table, .zui-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .styled-table th, .styled-table td, .zui-table th, .zui-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+
+        .styled-table thead tr {
+            background-color: #F5A623;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:nth-of-type(odd) {
+            background-color: #ffffff;
+        }
+
+        .styled-table tbody tr:hover, .zui-table tbody tr:hover {
+            background-color: #fff1ed;
+        }
+
+        .A1 {
+            background-color: #F5A623;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        input {
+            border: 1px solid #ddd;
+            background-color: #ffffff;
+            padding: 8px;
+            font-size: 0.9em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #F5A623;
+        }
+
+        a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #F5A623;
+        }
+
+        .charts-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 300px;
+            margin: 100px 0;
+        }
+
+        #bilanChart, #doughnutChart {
+            max-width: 45%;
+            width: 80px;
+            height: 300px;
+            margin: 0 20px;
+        }
+
+        .dashboard-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .dashboard-box {
+            background-color: #EDEDED;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        h1{
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .dashboard-box h2 {
+            margin: 0;
+            font-size: 2em;
+            color: #F5A623;
+        }
+
+        .dashboard-box p {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            color: #12192C;
+        }
+
+        h1 {
+            color: #2C3E50;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            {% include 'sidebar2.html' %}
+        </div>
+        <div class="main-content-wrapper">
+            <div class="main-content">
+                <h1>Table des Articles</h1>
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Article ID</th>
+                            <th>Libelle</th>
+                            <th>Prix Unitaire</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for res in dataa %}
+                        <tr data-art-id="{{ res.art_id }}" data-lib="{{ res.lib }}" data-pu="{{ res.pu }}">
+                            <td>{{ res.art_id }}</td>
+                            <td>{{ res.lib }}</td>
+                            <td>{{ res.pu }}</td>
+                            <td><a href="#" class="edit-link">Edit</a></td>
+                            <td><a href="{% url 'DeleteArticle' res.art_id %}" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <br>
+                <h1>Ajouter un article</h1>
+                <div>
+                    <form method="POST" action="{% url 'InsertArticles' %}">
+                        {% csrf_token %}
+                        <table class="zui-table">
+                            <tr>
+                                <td class="A1">Libelle</td>
+                                <td><input type="text" placeholder="Entrer la libelle" name="lib"></td>
+                            </tr>
+                            <tr>
+                                <td class="A1">Prix Unitaire</td>
+                                <td><input type="text" placeholder="Entrer le prix unitaire" name="pu"></td>
+                            </tr>
+                        </table>
+                        <br>
+                        <div class="button-container">
+                            <input type="submit" value="Valider">
+                            {% if messages %}
+                            {% for mess in messages %}
+                            <b style="color: green;">{{ mess }}</b>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for editing article -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="editArtId" class="form-label">Article ID</label>
+                            <input type="text" class="form-control" id="editArtId" name="art_id" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editLib" class="form-label">Libelle</label>
+                            <input type="text" class="form-control" id="editLib" name="lib">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editPu" class="form-label">Prix Unitaire</label>
+                            <input type="text" class="form-control" id="editPu" name="pu">
+                        </div>
+                        <div class="button-container">
+                            <input type="submit" value="Update" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editLinks = document.querySelectorAll('.edit-link');
+            const editForm = document.getElementById('editForm');
+            const editArtId = document.getElementById('editArtId');
+            const editLib = document.getElementById('editLib');
+            const editPu = document.getElementById('editPu');
+            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+
+            editLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const row = event.target.closest('tr');
+                    const artId = row.dataset.artId;
+                    const lib = row.dataset.lib;
+                    const pu = row.dataset.pu;
+
+                    // Set form fields
+                    editArtId.value = artId;
+                    editLib.value = lib;
+                    editPu.value = pu;
+
+                    // Construct the URL correctly
+                    editForm.action = "{% url 'updateArticle' art_id='0' %}".replace('0', artId);
+
+                    console.log(`Form action set to: ${editForm.action}`);
+
+                    // Show the modal
+                    editModal.show();
+                });
+            });
+
+            editForm.addEventListener('submit', function(event) {
+                console.log('Form submitted with action:', editForm.action);
+                console.log('Form data:', new FormData(editForm));
+            });
+        });
+    </script>
+</body>

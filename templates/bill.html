@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Bill for Sale #{{ bill.num }}</h1>
+        <p><strong>Article:</strong> {{ bill.article }}</p>
+        <p><strong>Quantity:</strong> {{ bill.quantity }}</p>
+        <p><strong>Price per unit:</strong> {{ bill.price }}</p>
+        <p><strong>Total:</strong> {{ bill.total }}</p>
+        <p><strong>Date:</strong> {{ bill.date }}</p>
+        <form method="get" action="{% url 'InsertVentes' %}">
+            <input type="hidden" name="download_pdf" value="true">
+            <input type="hidden" name="num" value="{{ bill.num }}">
+            <input type="hidden" name="art_id" value="{{ bill.article }}">
+            <input type="hidden" name="qte" value="{{ bill.quantity }}">
+            <input type="hidden" name="date" value="{{ bill.date }}">
+            <button type="submit" class="btn btn-primary">Download PDF</button>
+        </form>
+    </div>
+</body>
+</html>

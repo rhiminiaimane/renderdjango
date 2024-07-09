@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bill PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .bill-details {
+            margin-top: 20px;
+        }
+        .bill-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bill for Sale #{{ bill.num }}</h1>
+        <div class="bill-details">
+            <p><strong>Article:</strong> {{ bill.article }}</p>
+            <p><strong>Quantity:</strong> {{ bill.quantity }}</p>
+            <p><strong>Price per unit:</strong> {{ bill.price }}</p>
+            <p><strong>Total:</strong> {{ bill.total }}</p>
+            <p><strong>Date:</strong> {{ bill.date }}</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .main-content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .chart-container {
+            width: 80%;
+            margin: 50px 0;
+            text-align: center;
+        }
+
+        .chart-large {
+            width: 100%;
+            height: 400px;
+        }
+
+        .charts-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px;
+            height: 300px;
+            margin: 100px 0;
+        }
+
+        #bilanChart, #doughnutChart {
+            max-width: 45%;
+            width: 400px;
+            height: 400px;
+            margin: 0 20px;
+        }
+
+        .total-gain {
+            background-color: #ff765b;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 50px;
+            font-size: 1.5em;
+            width: 100%;
+        }
+        h1 {
+            color: #2C3E50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            {% include 'sidebar2.html' %}
+        </div>
+        <div class="main-content-wrapper">
+            <div class="main-content">
+                <h1 style="align-self: normal;">Analytics</h1>
+                <br>
+                <div class="total-gain">
+                    Total Gain: <span id="totalGain">$0</span>
+                </div>
+
+                <div class="chart-container">
+                    <h2>Sales Trends</h2>
+                    <br>
+                    <canvas id="salesTrendChart" class="chart-large"></canvas>
+                </div>
+
+                <div class="chart-container">
+                    <h2>Current Quantity Charts</h2>
+                    <br>
+                    <div class="charts-container">
+                        <canvas id="bilanChart"></canvas>
+                        <canvas id="doughnutChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Example data for Sales Trends
+        const salesTrendLabels = ["January", "February", "March", "April", "May", "June", "July"];
+        const salesTrendData = [1200, 1500, 1000, 1700, 1300, 1600, 1800];
+
+        const ctxSalesTrend = document.getElementById('salesTrendChart').getContext('2d');
+        const salesTrendChart = new Chart(ctxSalesTrend, {
+            type: 'line',
+            data: {
+                labels: salesTrendLabels,
+                datasets: [{
+                    label: 'Sales Trends',
+                    data: salesTrendData,
+                    backgroundColor: 'rgba(245, 166, 35, 0.2)',
+                    borderColor: '#F5A623',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Simulated data extraction from table, should be fetched from server in real case
+        const labels = ["Pain", "Lait", "Sucre", "Thé", "Pomme", "Sel"];
+        const data = [2, 8, 16, 20, 12, 1];
+        const unitPrices = [1, 2, 3, 4, 5, 6]; // Example unit prices
+
+        // Calculate total quantity for percentage calculation
+        const totalQuantity = data.reduce((acc, curr) => acc + curr, 0);
+        const percentages = data.map(qty => ((qty / totalQuantity) * 100).toFixed(2));
+
+        // Calculate total gain
+        const totalGain = data.reduce((acc, qty, index) => acc + (qty * unitPrices[index]), 0);
+        document.getElementById('totalGain').textContent = `$${totalGain}`;
+
+        // Create the bar chart
+        const ctxBar = document.getElementById('bilanChart').getContext('2d');
+        const bilanChart = new Chart(ctxBar, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Bar Chart for the Current Quantity',
+                    data: data,
+                    backgroundColor: '#ff765b',
+                    borderColor: '#12192C',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Create the doughnut chart
+        const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
+        const doughnutChart = new Chart(ctxDoughnut, {
+            type: 'pie',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Pie chart for the Current Quantity Percentages',
+                    data: percentages,
+                    backgroundColor: [
+                        '#FFA62F',
+                        '#FFCC70',
+                        '#FFFADD',
+                        '#BED7DC',
+                        '#8ECDDD',
+                        '#22668D'
+                    ],
+                    borderColor: '#12192C',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

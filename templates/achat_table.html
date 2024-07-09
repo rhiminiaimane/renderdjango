@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .main-content-wrapper {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            flex: 1;
+            padding: 20px;
+        }
+
+        .styled-table, .zui-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 25px 0;
+            font-size: 0.9em;
+            min-width: 400px;
+            box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .styled-table th, .styled-table td, .zui-table th, .zui-table td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+        }
+
+        .styled-table thead tr {
+            background-color: #F5A623;
+            color: #ffffff;
+            text-align: left;
+        }
+
+        .styled-table tbody tr:nth-of-type(even) {
+            background-color: #f3f3f3;
+        }
+
+        .styled-table tbody tr:nth-of-type(odd) {
+            background-color: #ffffff;
+        }
+
+        .styled-table tbody tr:hover, .zui-table tbody tr:hover {
+            background-color: #fff1ed;
+        }
+
+        .A1 {
+            background-color: #F5A623;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        input {
+            border: 1px solid #ddd;
+            background-color: #ffffff;
+            padding: 8px;
+            font-size: 0.9em;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #F5A623;
+        }
+
+        a {
+            text-decoration: none;
+            font-weight: bold;
+            color: #F5A623;
+        }
+
+        .charts-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            height: 300px;
+            margin: 100px 0;
+        }
+
+        #bilanChart, #doughnutChart {
+            max-width: 45%;
+            width: 80px;
+            height: 300px;
+            margin: 0 20px;
+        }
+
+        .dashboard-container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .dashboard-box {
+            background-color: #EDEDED;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        h1{
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .dashboard-box h2 {
+            margin: 0;
+            font-size: 2em;
+            color: #F5A623;
+        }
+
+        .dashboard-box p {
+            margin: 5px 0 0;
+            font-size: 1.2em;
+            color: #12192C;
+        }
+
+        h1 {
+            color: #2C3E50;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            {% include 'sidebar2.html' %}
+        </div>
+        <div class="main-content-wrapper">
+            <div class="main-content">
+                <h1>Table des Achats</h1>
+                <div>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Numero</th>
+                                <th>Article ID</th>
+                                <th>Quantité</th>
+                                <th>Date</th>
+                                <th>Edit</th>
+                                <th>Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for res in data %}
+                            <tr data-num="{{ res.num }}" data-art-id="{{ res.art_id }}" data-qte="{{ res.qte }}" data-date="{{ res.date }}">
+                                <td>{{ res.num }}</td>
+                                <td>{{ res.art_id }}</td>
+                                <td>{{ res.qte }}</td>
+                                <td>{{ res.date|date:"Y-m-d" }}</td> <!-- Formatted Date -->
+                                <td><a href="#" class="edit-link">Edit</a></td>
+                                <td><a href="{% url 'DelAchat' res.num %}" onclick="return confirm('Are you sure you want to delete this record?')">Delete</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <br>
+                <h1>Ajouter une achat</h1>
+                <div>
+                    <form method="POST" action="{% url 'InsertVentes' %}">
+                        {% csrf_token %}
+                        <table class="zui-table">
+                            <tr>
+                                <td class="A1">Article id</td>
+                                <td><input type="text" placeholder="Entrer ID de l'article" name="art_id"></td>
+                            </tr>
+                            <tr>
+                                <td class="A1">Quantité</td>
+                                <td><input type="text" placeholder="Entrer la quantité" name="qte"></td>
+                            </tr>
+                            <tr>
+                                <td class="A1">Date</td>
+                                <td><input type="date" placeholder="Entrer la date" name="date"></td>
+                            </tr>
+                        </table>
+                        <br>
+                        <div class="button-container">
+                            <input type="submit" value="Valider">
+                            {% if messages %}
+                            {% for mess in messages %}
+                            <b style="color: green;">{{ mess }}</b>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for editing article -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Edit Article</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm" method="POST">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="editNum" class="form-label">Numero</label>
+                            <input type="text" class="form-control" id="editNum" name="num" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editArtId" class="form-label">Article ID</label>
+                            <input type="text" class="form-control" id="editArtId" name="art_id">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editQte" class="form-label">Quantité</label>
+                            <input type="text" class="form-control" id="editQte" name="qte">
+                        </div>
+                        <div class="mb-3">
+                            <label for="editDate" class="form-label">Date</label>
+                            <input type="date" class="form-control" id="editDate" name="date">
+                        </div>
+                        <div class="button-container">
+                            <input type="submit" value="Update" class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const editLinks = document.querySelectorAll('.edit-link');
+            const editForm = document.getElementById('editForm');
+            const editNum = document.getElementById('editNum');
+            const editArtId = document.getElementById('editArtId');
+            const editQte = document.getElementById('editQte');
+            const editDate = document.getElementById('editDate');
+            const editModal = new bootstrap.Modal(document.getElementById('editModal'));
+
+            editLinks.forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const row = event.target.closest('tr');
+                    const num = row.dataset.num;
+                    const artId = row.dataset.artId;
+                    const qte = row.dataset.qte;
+                    const date = row.dataset.date;
+
+                    // Set form fields
+                    editNum.value = num;
+                    editArtId.value = artId;
+                    editQte.value = qte;
+                    editDate.value = date;
+
+                    // Construct the URL correctly
+                    editForm.action = "{% url 'updateVente' num=0 %}".replace('0', num);
+
+                    console.log(`Form action set to: ${editForm.action}`);
+
+                    // Show the modal
+                    editModal.show();
+                });
+            });
+
+            editForm.addEventListener('submit', function(event) {
+                console.log('Form submitted with action:', editForm.action);
+                console.log('Form data:', new FormData(editForm));
+            });
+        });
+    </script>
+</body>
+</html>

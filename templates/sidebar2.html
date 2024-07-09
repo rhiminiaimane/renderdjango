@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sidebar sub menus</title>
+    <style>
+        /*===== GOOGLE FONTS =====*/
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+        @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css');
+
+        /*===== VARIABLES CSS =====*/
+        :root {
+            --nav-width: 300px; /* Adjusted width to be expanded */
+            --first-color: #F5A623;
+            --bg-color: #12192C;
+            --sub-color: #12192C;
+            --white-color: #FFF;
+
+            --body-font: 'Poppins', sans-serif;
+            --normal-font-size: 1rem;
+            --small-font-size: .875rem;
+
+            --z-fixed: 100;
+        }
+
+        /*===== BASE =====*/
+        *,::before,::after {
+            box-sizing: border-box;
+        }
+        body {
+            position: relative;
+            margin: 0;
+            padding: 2rem 0 0 300px; /* Adjusted padding */
+            font-family: var(--body-font);
+            font-size: var(--normal-font-size);
+            transition: .5s;
+        }
+        h1 {
+            margin: 0;
+        }
+        ul {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        a {
+            text-decoration: none;
+        }
+
+        /*===== l NAV =====*/
+        .l-navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: var(--nav-width); /* Expanded width */
+            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--white-color);
+            padding: 1.5rem 1.5rem 2rem;
+            transition: .5s;
+            z-index: var(--z-fixed);
+        }
+
+        /*===== NAV =====*/
+        .nav {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        .nav__brand {
+            display: grid;
+            grid-template-columns: max-content max-content;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-left: 90px;
+            padding-top: 25px;
+        }
+        .nav__logo {
+            color: var(--white-color);
+            font-weight: bold;
+            text-decoration: underline;
+            text-decoration-thickness: 1.5px; /* Adjust this value to increase/decrease the space */
+            text-underline-offset: 4px; /* Adjust this value to change the distance between text and underline */
+}
+
+        .nav__link {
+            display: grid;
+            grid-template-columns: max-content max-content;
+            align-items: center;
+            column-gap: .75rem;
+            padding: .75rem;
+            color: var(--white-color);
+            border-radius: .5rem;
+            margin-bottom: 1rem;
+            transition: .3s;
+            cursor: pointer;
+        }
+        .nav__link:hover {
+            background-color: var(--first-color);
+
+        }
+        .nav__list:hover{
+            color: #FFF;
+        }
+        .nav__icon {
+            font-size: 1.25rem;
+        }
+        .nav__name {
+            font-size: var(--small-font-size);
+        }
+        .nav__name:hover {
+            color: white;
+        }
+
+        /*Active links menu*/
+        .active {
+            background-color: var(--first-color);
+        }
+
+        /*===== COLLAPSE =====*/
+        .collapse {
+            grid-template-columns: 20px max-content 1fr;
+        }
+        .collapse__link {
+            justify-self: flex-end;
+            transition: .5s;
+        }
+        .collapse__menu {
+            display: none;
+            padding: .75rem 2.25rem;
+        }
+        .collapse__sublink {
+            color: var (--sub-color);
+            font-size: var (--small-font-size);
+        }
+        .collapse__sublink:hover {
+            color: var (--white-color);
+        }
+
+        /*Show collapse*/
+        .showCollapse {
+            display: block;
+        }
+
+        /*Rotate icon*/
+        .rotate {
+            transform: rotate(180deg);
+        }
+        /*sidebar*/
+
+        .nav__subtitle {
+  font-size: var(--normal-font-size);
+  text-transform: uppercase;
+  letter-spacing: .1rem;
+  color:#F5A623;
+}
+
+
+    </style>
+</head>
+<body id="body-pd">
+    <div class="l-navbar" id="navbar">
+        <nav class="nav">
+            <div>
+                <div class="nav__brand">
+                    <a href="#" class="nav__logo">LB STORE</a>
+                </div>
+                <h3 class="nav__subtitle">EXPORTATION</h3>
+                <div class="nav__list">
+                    <a href="{% url 'upload' %}" class="nav__link {% if request.path == '/upload/' %}active{% endif %}">
+                        <i class="fa-solid fa-database nav__icon"></i>
+                        <span class="nav__name">Extraction des données</span>
+                    </a>
+                    
+                    <h3 class="nav__subtitle">TRANSFORM</h3>
+                    <a href="{% url 'clients_table' %}" class="nav__link {% if request.path == '/clients/' %}active{% endif %}">
+                        <i class="fa-solid fa-users nav__icon"></i>
+                        <span class="nav__name">Clients</span>
+                    </a>
+                    <a href="{% url 'articles_table' %}" class="nav__link {% if request.path == '/articles/' %}active{% endif %}">
+                        <i class="fa-solid fa-tag nav__icon"></i>
+                        <span class="nav__name">Articles</span>
+                    </a>
+                    <a href="{% url 'achat_table' %}" class="nav__link {% if request.path == '/achats/' %}active{% endif %}">
+                        <i class="fa-solid fa-cart-shopping nav__icon"></i>
+                        <span class="nav__name">Achats</span>
+                    </a>
+                    <a href="{% url 'ventes_table' %}" class="nav__link {% if request.path == '/ventes/' %}active{% endif %}">
+                        <i class="fa-solid fa-sack-dollar nav__icon"></i>
+                        <span class="nav__name">Ventes</span>
+                    </a>
+                    <h3 class="nav__subtitle">LOAD</h3>
+                    <a href="{% url 'dashboard' %}" class="nav__link {% if request.path == '/dashboard/' %}active{% endif %}">
+                        <i class="fa-solid fa-shop nav__icon"></i>
+                        <span class="nav__name">Bilan</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ===== IONICONS ===== -->
+    <script src="https://unpkg.com/ionicons@5.1.2/dist/ionicons.js"></script>
+
+    <!-- ===== MAIN JS ===== -->
+    <script src="assets/js/main.js"></script>
+    <script>
+        /* Commented out to keep sidebar always open
+        const showMenu = (toggleId, navbarId, bodyId) => {
+            const toggle = document.getElementById(toggleId),
+                navbar = document.getElementById(navbarId),
+                bodypadding = document.getElementById(bodyId);
+
+            if (toggle && navbar) {
+                toggle.addEventListener('click', () => {
+                    navbar.classList.toggle('expander');
+                    bodypadding.classList.toggle('body-pd');
+                });
+            }
+        };
+        showMenu('nav-toggle', 'navbar', 'body-pd');
+        */
+        /*===== LINK ACTIVE  =====*/ 
+        const linkColor = document.querySelectorAll('.nav__link');
+        function colorLink() {
+            linkColor.forEach(l => l.classList.remove('active'));
+            this.classList.add('active');
+        }
+        linkColor.forEach(l => l.addEventListener('click', colorLink));
+
+        /*===== COLLAPSE MENU  =====*/ 
+        const linkCollapse = document.getElementsByClassName('collapse__link');
+        for (let i = 0; i < linkCollapse.length; i++) {
+            linkCollapse[i].addEventListener('click', function() {
+                const collapseMenu = this.nextElementSibling;
+                collapseMenu.classList.toggle('showCollapse');
+
+                const rotate = collapseMenu.previousElementSibling;
+                rotate.classList.toggle('rotate');
+            });
+        }
+    </script>
+</body>
+</html>
